@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>匿名聊天游戏</title>
+</head>
+<body>
+
+<h2>匿名聊天游戏</h2>
+
+<input id="roomId" placeholder="输入房间号">
+<button onclick="joinRoom()">加入房间</button>
+
+<button onclick="startGame()">开始游戏</button>
+<button onclick="endGame()">结束游戏</button>
+
+<div id="chat"></div>
+
+<input id="msg">
+<button onclick="send()">发送</button>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+const socket = io();
+
+function joinRoom() {
+  const roomId = document.getElementById("roomId").value;
+  socket.emit("joinRoom", { roomId });
+
+  alert("分享房间号给朋友：" + roomId);
+}
+
+function startGame() {
+  socket.emit("startGame");
+}
+
+function endGame() {
+  socket.emit("endGame");
+}
+
+function send() {
+  const msg = document.getElementById("msg").value;
+  socket.emit("sendMessage", msg);
+}
+
+socket.on("newMessage", (msg) => {
+  const div = document.getElementById("chat");
+  div.innerHTML += "<p>玩家：" + msg.text + "</p>";
+});
+
+socket.on("gameEnded", (data) => {
+  const div = document.getElementById("chat");
+
+  div.innerHTML += "<h3>结果：</h3>";
+  data.speakers.forEach((u,i)=>{
+    div.innerHTML += `<p>玩家${i+1}: ${u.name}</p>`;
+  });
+});
+</script>
+
+</body>
+</html>
