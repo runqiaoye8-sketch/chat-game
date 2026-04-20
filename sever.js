@@ -5,13 +5,17 @@ const { v4: uuidv4 } = require("uuid");
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server, { cors: { origin: "*" } });
+
+const io = new Server(server, {
+  cors: { origin: "*" }
+});
 
 app.use(express.static("public"));
 
 const rooms = {};
 
 io.on("connection", (socket) => {
+
   socket.on("joinRoom", ({ roomId }) => {
     if (!rooms[roomId]) {
       rooms[roomId] = {
@@ -61,7 +65,6 @@ io.on("connection", (socket) => {
     if (!isSpeaker) return;
 
     const message = {
-      sender: socket.id,
       text: msg
     };
 
@@ -82,10 +85,10 @@ io.on("connection", (socket) => {
     room.speakers = [];
     room.messages = [];
   });
+
 });
 
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
+server.listen(PORT, "0.0.0.0", () => {
   console.log("Server running on port " + PORT);
 });
-
