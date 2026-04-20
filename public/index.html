@@ -153,7 +153,6 @@
     .error-msg { color: #ff9f9f; margin: 8px 0; font-size: 14px; }
     .footer-note { margin-top: 16px; font-size: 13px; color: #7f8da3; text-align: center; }
     .hidden { display: none !important; }
-    .inline-block { display: inline-block; }
   </style>
 </head>
 <body>
@@ -280,16 +279,14 @@
   const myNameDisplay = document.getElementById('myNameDisplay');
   const usersPanel = document.getElementById('usersPanel');
 
-  // 状态变量
   let currentRoomId = null;
   let currentUserName = '';
   let isGameStarted = false;
   let amISpeaker = false;
-  let myAnonymousName = ''; // 匿名A或B
-  let allUsers = []; // [{id, name}]
+  let myAnonymousName = '';
+  let allUsers = [];
   let hasVoted = false;
 
-  // 辅助函数
   function showError(msg) {
     errorMsgDiv.textContent = msg;
     setTimeout(() => errorMsgDiv.textContent = '', 4000);
@@ -366,6 +363,8 @@
       joinRoomInput.disabled = false;
       userNameInput.disabled = false;
       hasVoted = false;
+      submitVoteBtn.disabled = false;
+      voteStatus.textContent = '';
     }
   }
 
@@ -381,7 +380,6 @@
     roomIdDisplay.textContent = roomId;
     roomInfoDisplay.style.display = 'flex';
     addSystemMessage(`房间已创建，房间号: ${roomId}`);
-    // 自动加入
     const name = userNameInput.value.trim();
     if (name) {
       socket.emit('joinRoom', { roomId, userName: name });
@@ -436,8 +434,7 @@
     isGameStarted = state.gameStarted;
     if (!isGameStarted) {
       amISpeaker = false;
-      gameResultPanel.classList.add('hidden');
-      clearChat();
+      // 注意：不清除结果面板，由gameEnded事件控制
     }
     updateUIForGameState();
   });
@@ -453,17 +450,17 @@
   });
 
   socket.on('gameEnded', (data) => {
+    // 游戏结束，更新状态
     isGameStarted = false;
     amISpeaker = false;
     updateUIForGameState();
 
-    // 显示发言者身份
+    // 展示结果
     const speakers = data.speakers;
     resultSpeakers.innerHTML = `<p>🎤 发言者身份：<br> 
       ${speakers.map(s => `${s.anonymousName} → ${s.realName}`).join('<br>')}
     </p>`;
 
-    // 显示投票统计
     let voteHtml = `<p>🗳️ 投票统计 (总票数: ${data.totalVotes})</p>`;
     voteHtml += `<p>匿名A正确票数: ${data.correctCountA} / 匿名B正确票数: ${data.correctCountB}</p>`;
     if (data.votes.length > 0) {
@@ -477,7 +474,6 @@
     }
     resultVotes.innerHTML = voteHtml;
 
-    // 显示对话记录
     let msgHtml = '';
     data.messages.forEach(m => {
       const time = new Date(m.timestamp).toLocaleTimeString().slice(0,5);
@@ -487,6 +483,8 @@
 
     gameResultPanel.classList.remove('hidden');
     addSystemMessage('🏁 游戏结束，结果已公布');
+    
+    // 清空聊天区域，准备下一轮
     clearChat();
   });
 
