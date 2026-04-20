@@ -1,505 +1,571 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>匿名聊天 · 双人对话游戏</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        body {
-            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
-            background: #1a1e2b;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 16px;
-        }
-        .container {
-            max-width: 700px;
-            width: 100%;
-            background: #252b3d;
-            border-radius: 24px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-            padding: 24px;
-            color: #eef2fb;
-        }
-        h2 {
-            font-weight: 500;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        h2 span {
-            background: #3f4a6b;
-            padding: 4px 12px;
-            border-radius: 30px;
-            font-size: 14px;
-            font-weight: 400;
-        }
-        .room-panel {
-            background: #1e2332;
-            border-radius: 18px;
-            padding: 16px;
-            margin-bottom: 20px;
-        }
-        .room-id-box {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-        .room-id {
-            background: #0f1219;
-            padding: 10px 18px;
-            border-radius: 40px;
-            font-family: monospace;
-            font-size: 24px;
-            letter-spacing: 2px;
-            color: #b7c9e2;
-            border: 1px solid #3d4b66;
-        }
-        .btn {
-            background: #3f4a6b;
-            border: none;
-            color: white;
-            padding: 10px 18px;
-            border-radius: 40px;
-            font-size: 15px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: 0.2s;
-            border: 1px solid #5d6f94;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-        }
-        .btn-primary {
-            background: #6c5ce7;
-            border-color: #a29bfe;
-        }
-        .btn-warning {
-            background: #d63031;
-            border-color: #ff7675;
-        }
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        .btn:hover:not(:disabled) {
-            filter: brightness(1.1);
-        }
-        .users-section {
-            margin-bottom: 20px;
-        }
-        .users-title {
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #9aa7c2;
-            margin-bottom: 8px;
-        }
-        .user-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-        .user-badge {
-            background: #2f3a55;
-            padding: 6px 16px;
-            border-radius: 30px;
-            font-size: 14px;
-            border-left: 4px solid #6c5ce7;
-        }
-        .chat-area {
-            background: #1b212f;
-            border-radius: 18px;
-            padding: 16px;
-            height: 280px;
-            overflow-y: auto;
-            margin-bottom: 16px;
-            border: 1px solid #33415c;
-        }
-        .message {
-            margin-bottom: 12px;
-            padding: 8px 14px;
-            background: #262e42;
-            border-radius: 18px;
-            max-width: 85%;
-            word-break: break-word;
-        }
-        .message.own {
-            background: #3b305a;
-            margin-left: auto;
-            border-bottom-right-radius: 6px;
-        }
-        .message .meta {
-            font-size: 11px;
-            color: #a5b3d1;
-            margin-bottom: 4px;
-        }
-        .result-box {
-            background: #1f2a3c;
-            border-radius: 18px;
-            padding: 18px;
-            margin-top: 20px;
-            border: 1px solid #6c5ce7;
-        }
-        .input-group {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-        }
-        .input-group input {
-            flex: 1;
-            background: #0f141f;
-            border: 1px solid #3d506e;
-            border-radius: 50px;
-            padding: 14px 18px;
-            color: white;
-            font-size: 15px;
-            outline: none;
-        }
-        .status-badge {
-            display: inline-block;
-            background: #2ecc71;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 13px;
-            color: black;
-            font-weight: bold;
-        }
-        .error-msg {
-            color: #ff9f9f;
-            margin: 8px 0;
-            font-size: 14px;
-        }
-        .footer-note {
-            margin-top: 16px;
-            font-size: 13px;
-            color: #7f8da3;
-            text-align: center;
-        }
-        .hidden {
-            display: none !important;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>匿名卧底 · 猜猜我是谁</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', Roboto, sans-serif;
+      background: #1a1e2b;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+    }
+    .container {
+      max-width: 800px;
+      width: 100%;
+      background: #252b3d;
+      border-radius: 24px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+      padding: 24px;
+      color: #eef2fb;
+    }
+    h2 { font-weight: 500; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+    .badge {
+      background: #3f4a6b;
+      padding: 4px 12px;
+      border-radius: 30px;
+      font-size: 14px;
+    }
+    .room-panel {
+      background: #1e2332;
+      border-radius: 18px;
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+    .flex-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+    .room-id-box {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .room-id {
+      background: #0f1219;
+      padding: 10px 18px;
+      border-radius: 40px;
+      font-family: monospace;
+      font-size: 24px;
+      letter-spacing: 2px;
+      color: #b7c9e2;
+      border: 1px solid #3d4b66;
+    }
+    .btn {
+      background: #3f4a6b;
+      border: none;
+      color: white;
+      padding: 10px 18px;
+      border-radius: 40px;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: 0.2s;
+      border: 1px solid #5d6f94;
+    }
+    .btn-primary { background: #6c5ce7; border-color: #a29bfe; }
+    .btn-warning { background: #d63031; border-color: #ff7675; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn:hover:not(:disabled) { filter: brightness(1.1); }
+    .users-section { margin-bottom: 20px; }
+    .users-title {
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #9aa7c2;
+      margin-bottom: 8px;
+    }
+    .user-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .user-badge {
+      background: #2f3a55;
+      padding: 6px 16px;
+      border-radius: 30px;
+      font-size: 14px;
+      border-left: 4px solid #6c5ce7;
+    }
+    .chat-area {
+      background: #1b212f;
+      border-radius: 18px;
+      padding: 16px;
+      height: 280px;
+      overflow-y: auto;
+      margin-bottom: 16px;
+      border: 1px solid #33415c;
+    }
+    .message {
+      margin-bottom: 12px;
+      padding: 8px 14px;
+      background: #262e42;
+      border-radius: 18px;
+      max-width: 85%;
+      word-break: break-word;
+    }
+    .message.own { background: #3b305a; margin-left: auto; }
+    .message .meta { font-size: 11px; color: #a5b3d1; margin-bottom: 4px; }
+    .input-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .input-group input {
+      flex: 1;
+      background: #0f141f;
+      border: 1px solid #3d506e;
+      border-radius: 50px;
+      padding: 14px 18px;
+      color: white;
+      font-size: 15px;
+      outline: none;
+    }
+    .result-box {
+      background: #1f2a3c;
+      border-radius: 18px;
+      padding: 18px;
+      margin-top: 20px;
+      border: 1px solid #6c5ce7;
+    }
+    .vote-panel {
+      background: #2a3448;
+      border-radius: 16px;
+      padding: 16px;
+      margin: 16px 0;
+    }
+    select {
+      background: #0f141f;
+      color: white;
+      border: 1px solid #3d506e;
+      border-radius: 30px;
+      padding: 8px 16px;
+      margin: 5px 0;
+      width: 100%;
+    }
+    .error-msg { color: #ff9f9f; margin: 8px 0; font-size: 14px; }
+    .footer-note { margin-top: 16px; font-size: 13px; color: #7f8da3; text-align: center; }
+    .hidden { display: none !important; }
+    .inline-block { display: inline-block; }
+  </style>
 </head>
 <body>
 <div class="container">
-    <h2>🎭 匿名聊天游戏 <span id="gameStatusLabel">等待开始</span></h2>
-    
-    <!-- 房间信息区 -->
-    <div class="room-panel" id="roomSetupPanel">
-        <div style="display: flex; gap: 10px; margin-bottom: 12px;">
-            <button class="btn btn-primary" id="createRoomBtn">✨ 创建房间</button>
-            <input type="text" id="joinRoomInput" placeholder="输入房间号" maxlength="6" style="flex:1; background:#1e2332; border:1px solid #3d506e; border-radius:40px; padding:0 16px; color:white;">
-            <button class="btn" id="joinRoomBtn">加入</button>
-        </div>
-        <div class="room-id-box" id="roomInfoDisplay" style="display: none;">
-            <div class="room-id" id="roomIdDisplay">------</div>
-            <button class="btn" id="copyRoomBtn">📋 复制邀请链接</button>
-        </div>
-        <div id="errorMsg" class="error-msg"></div>
-    </div>
+  <h2>🎭 匿名卧底 · 猜猜我是谁 <span class="badge" id="gameStatusLabel">等待开始</span></h2>
 
-    <!-- 玩家列表 (游戏未开始时可见) -->
-    <div class="users-section" id="usersPanel">
-        <div class="users-title">👥 在线玩家 (<span id="userCount">0</span>)</div>
-        <div class="user-list" id="userList"></div>
+  <!-- 房间设置区域 -->
+  <div class="room-panel" id="roomSetupPanel">
+    <div class="flex-row">
+      <button class="btn btn-primary" id="createRoomBtn">✨ 创建房间</button>
+      <input type="text" id="joinRoomInput" placeholder="输入房间号" maxlength="6" style="flex:1; background:#1e2332; border:1px solid #3d506e; border-radius:40px; padding:0 16px; color:white;">
+      <input type="text" id="userNameInput" placeholder="你的姓名" style="flex:1; background:#1e2332; border:1px solid #3d506e; border-radius:40px; padding:0 16px; color:white;">
+      <button class="btn" id="joinRoomBtn">加入</button>
     </div>
+    <div class="room-id-box" id="roomInfoDisplay" style="display: none;">
+      <div class="room-id" id="roomIdDisplay">------</div>
+      <button class="btn" id="copyRoomBtn">📋 复制邀请码</button>
+    </div>
+    <div id="errorMsg" class="error-msg"></div>
+  </div>
 
-    <!-- 游戏控制按钮 -->
-    <div style="display: flex; gap: 12px; margin-bottom: 18px;">
-        <button class="btn btn-primary" id="startGameBtn" disabled>🎲 开始游戏</button>
-        <button class="btn btn-warning" id="endGameBtn" disabled>⏹️ 结束游戏</button>
-    </div>
+  <!-- 玩家列表（游戏前可见） -->
+  <div class="users-section" id="usersPanel">
+    <div class="users-title">👥 在线玩家 (<span id="userCount">0</span>)</div>
+    <div class="user-list" id="userList"></div>
+  </div>
 
-    <!-- 聊天显示区 -->
-    <div class="chat-area" id="chatMessages">
-        <div style="color: #7f8da3; text-align: center; padding: 20px;">💬 消息会显示在这里</div>
-    </div>
+  <!-- 游戏控制 -->
+  <div style="display: flex; gap: 12px; margin-bottom: 18px;">
+    <button class="btn btn-primary" id="startGameBtn" disabled>🎲 开始游戏</button>
+    <button class="btn btn-warning" id="endGameBtn" disabled>⏹️ 结束游戏</button>
+  </div>
 
-    <!-- 发言输入区 (仅发言者可见) -->
-    <div class="input-group" id="messageInputPanel" style="display: none;">
-        <input type="text" id="messageInput" placeholder="输入消息..." maxlength="200">
-        <button class="btn btn-primary" id="sendMessageBtn">发送</button>
-    </div>
-    
-    <!-- 旁观者提示 -->
-    <div id="spectatorNotice" style="text-align: center; margin: 10px 0; color: #b0bedd; display: none;">
-        🔇 你正在观战，无法发言
-    </div>
+  <!-- 聊天显示区 -->
+  <div class="chat-area" id="chatMessages">
+    <div style="color: #7f8da3; text-align: center; padding: 20px;">💬 消息会显示在这里</div>
+  </div>
 
-    <!-- 游戏结果展示区 -->
-    <div id="gameResultPanel" class="result-box hidden">
-        <h3 style="margin-bottom: 12px;">📋 游戏结果</h3>
-        <div id="resultSpeakers"></div>
-        <div style="margin-top: 14px;"><strong>对话记录：</strong></div>
-        <div id="resultMessages" style="max-height: 150px; overflow-y: auto; margin-top: 8px;"></div>
-        <button class="btn" id="closeResultBtn" style="margin-top: 16px;">关闭</button>
+  <!-- 公开聊天输入（游戏前） -->
+  <div class="input-group" id="publicChatPanel">
+    <input type="text" id="publicMessageInput" placeholder="输入公开消息...">
+    <button class="btn btn-primary" id="sendPublicBtn">发送</button>
+  </div>
+
+  <!-- 匿名发言输入（游戏中对发言者） -->
+  <div class="input-group hidden" id="anonymousChatPanel">
+    <input type="text" id="anonymousMessageInput" placeholder="作为匿名者发言...">
+    <button class="btn btn-primary" id="sendAnonymousBtn">发送</button>
+  </div>
+
+  <!-- 观战者投票区 -->
+  <div class="vote-panel hidden" id="votePanel">
+    <h4>🗳️ 猜猜他们是谁？</h4>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 10px;">
+      <div>
+        <label>匿名A 的真实身份：</label>
+        <select id="voteSelectA"></select>
+      </div>
+      <div>
+        <label>匿名B 的真实身份：</label>
+        <select id="voteSelectB"></select>
+      </div>
     </div>
-    
-    <div class="footer-note">
-        👤 你的昵称: <span id="myNameDisplay">未加入</span>
-    </div>
+    <button class="btn btn-primary" id="submitVoteBtn" style="margin-top: 15px;">提交投票</button>
+    <p id="voteStatus" style="margin-top: 8px; font-size: 13px;"></p>
+  </div>
+
+  <!-- 旁观者提示 -->
+  <div id="spectatorNotice" style="text-align: center; margin: 10px 0; color: #b0bedd; display: none;">
+    🔇 你正在观战，可以投票猜测身份
+  </div>
+
+  <!-- 游戏结果区 -->
+  <div id="gameResultPanel" class="result-box hidden">
+    <h3>📋 游戏结果</h3>
+    <div id="resultSpeakers"></div>
+    <div id="resultVotes"></div>
+    <div style="margin-top: 14px;"><strong>对话记录：</strong></div>
+    <div id="resultMessages" style="max-height: 150px; overflow-y: auto; margin-top: 8px;"></div>
+    <button class="btn" id="closeResultBtn" style="margin-top: 16px;">关闭</button>
+  </div>
+
+  <div class="footer-note">
+    👤 当前用户: <span id="myNameDisplay">未加入</span>
+  </div>
 </div>
 
 <script src="/socket.io/socket.io.js"></script>
 <script>
-    const socket = io();
-    
-    // DOM 元素
-    const createRoomBtn = document.getElementById('createRoomBtn');
-    const joinRoomInput = document.getElementById('joinRoomInput');
-    const joinRoomBtn = document.getElementById('joinRoomBtn');
-    const roomInfoDisplay = document.getElementById('roomInfoDisplay');
-    const roomIdDisplay = document.getElementById('roomIdDisplay');
-    const copyRoomBtn = document.getElementById('copyRoomBtn');
-    const startGameBtn = document.getElementById('startGameBtn');
-    const endGameBtn = document.getElementById('endGameBtn');
-    const userList = document.getElementById('userList');
-    const userCountSpan = document.getElementById('userCount');
-    const chatMessages = document.getElementById('chatMessages');
-    const messageInputPanel = document.getElementById('messageInputPanel');
-    const messageInput = document.getElementById('messageInput');
-    const sendMessageBtn = document.getElementById('sendMessageBtn');
-    const spectatorNotice = document.getElementById('spectatorNotice');
-    const gameResultPanel = document.getElementById('gameResultPanel');
-    const resultSpeakers = document.getElementById('resultSpeakers');
-    const resultMessages = document.getElementById('resultMessages');
-    const closeResultBtn = document.getElementById('closeResultBtn');
-    const errorMsgDiv = document.getElementById('errorMsg');
-    const gameStatusLabel = document.getElementById('gameStatusLabel');
-    const myNameDisplay = document.getElementById('myNameDisplay');
-    const usersPanel = document.getElementById('usersPanel');
+  const socket = io();
 
-    // 状态变量
-    let currentRoomId = null;
-    let currentUserName = '';
-    let isGameStarted = false;
-    let amISpeaker = false;
-    let isRoomCreator = false;
-    let users = [];
+  // DOM 元素
+  const createRoomBtn = document.getElementById('createRoomBtn');
+  const joinRoomInput = document.getElementById('joinRoomInput');
+  const userNameInput = document.getElementById('userNameInput');
+  const joinRoomBtn = document.getElementById('joinRoomBtn');
+  const roomInfoDisplay = document.getElementById('roomInfoDisplay');
+  const roomIdDisplay = document.getElementById('roomIdDisplay');
+  const copyRoomBtn = document.getElementById('copyRoomBtn');
+  const startGameBtn = document.getElementById('startGameBtn');
+  const endGameBtn = document.getElementById('endGameBtn');
+  const userList = document.getElementById('userList');
+  const userCountSpan = document.getElementById('userCount');
+  const chatMessages = document.getElementById('chatMessages');
+  const publicChatPanel = document.getElementById('publicChatPanel');
+  const publicMessageInput = document.getElementById('publicMessageInput');
+  const sendPublicBtn = document.getElementById('sendPublicBtn');
+  const anonymousChatPanel = document.getElementById('anonymousChatPanel');
+  const anonymousMessageInput = document.getElementById('anonymousMessageInput');
+  const sendAnonymousBtn = document.getElementById('sendAnonymousBtn');
+  const votePanel = document.getElementById('votePanel');
+  const voteSelectA = document.getElementById('voteSelectA');
+  const voteSelectB = document.getElementById('voteSelectB');
+  const submitVoteBtn = document.getElementById('submitVoteBtn');
+  const voteStatus = document.getElementById('voteStatus');
+  const spectatorNotice = document.getElementById('spectatorNotice');
+  const gameResultPanel = document.getElementById('gameResultPanel');
+  const resultSpeakers = document.getElementById('resultSpeakers');
+  const resultVotes = document.getElementById('resultVotes');
+  const resultMessages = document.getElementById('resultMessages');
+  const closeResultBtn = document.getElementById('closeResultBtn');
+  const errorMsgDiv = document.getElementById('errorMsg');
+  const gameStatusLabel = document.getElementById('gameStatusLabel');
+  const myNameDisplay = document.getElementById('myNameDisplay');
+  const usersPanel = document.getElementById('usersPanel');
 
-    // 显示错误
-    function showError(msg) {
-        errorMsgDiv.textContent = msg;
-        setTimeout(() => { errorMsgDiv.textContent = ''; }, 4000);
+  // 状态变量
+  let currentRoomId = null;
+  let currentUserName = '';
+  let isGameStarted = false;
+  let amISpeaker = false;
+  let myAnonymousName = ''; // 匿名A或B
+  let allUsers = []; // [{id, name}]
+  let hasVoted = false;
+
+  // 辅助函数
+  function showError(msg) {
+    errorMsgDiv.textContent = msg;
+    setTimeout(() => errorMsgDiv.textContent = '', 4000);
+  }
+
+  function renderUserList(users) {
+    allUsers = users;
+    userCountSpan.textContent = users.length;
+    userList.innerHTML = users.map(u => 
+      `<div class="user-badge">${u.name} ${u.id === socket.id ? '(你)' : ''}</div>`
+    ).join('');
+    if (!isGameStarted) {
+      startGameBtn.disabled = users.length < 2;
     }
+  }
 
-    // 更新UI中的用户列表
-    function renderUserList(userArray) {
-        users = userArray;
-        userCountSpan.textContent = users.length;
-        userList.innerHTML = users.map(u => 
-            `<div class="user-badge">${u.name} ${u.id === socket.id ? '(你)' : ''}</div>`
-        ).join('');
-        
-        // 开始按钮可用性
-        if (currentRoomId && !isGameStarted) {
-            startGameBtn.disabled = users.length < 2;
-        } else {
-            startGameBtn.disabled = true;
-        }
+  function addMessage(html) {
+    chatMessages.insertAdjacentHTML('beforeend', html);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  function addPublicMessage(msg, isOwn) {
+    const time = new Date(msg.timestamp).toLocaleTimeString().slice(0,5);
+    const cls = isOwn ? 'own' : '';
+    addMessage(`<div class="message ${cls}"><div class="meta">${msg.senderName} · ${time}</div><div>${msg.text}</div></div>`);
+  }
+
+  function addAnonymousMessage(msg) {
+    const time = new Date(msg.timestamp).toLocaleTimeString().slice(0,5);
+    addMessage(`<div class="message"><div class="meta">${msg.anonymousName} · ${time}</div><div>${msg.text}</div></div>`);
+  }
+
+  function addSystemMessage(text) {
+    addMessage(`<div class="message" style="background:#2e3b4e; text-align:center; max-width:100%;"><div class="meta">🔔 系统</div><div>${text}</div></div>`);
+  }
+
+  function clearChat() {
+    chatMessages.innerHTML = '';
+  }
+
+  function updateUIForGameState() {
+    if (isGameStarted) {
+      gameStatusLabel.textContent = '🎮 游戏中';
+      startGameBtn.disabled = true;
+      endGameBtn.disabled = false;
+      usersPanel.classList.add('hidden');
+      publicChatPanel.classList.add('hidden');
+      if (amISpeaker) {
+        anonymousChatPanel.classList.remove('hidden');
+        spectatorNotice.style.display = 'none';
+        votePanel.classList.add('hidden');
+      } else {
+        anonymousChatPanel.classList.add('hidden');
+        spectatorNotice.style.display = 'block';
+        votePanel.classList.remove('hidden');
+      }
+      document.getElementById('roomSetupPanel').style.opacity = '0.7';
+      createRoomBtn.disabled = true;
+      joinRoomBtn.disabled = true;
+      joinRoomInput.disabled = true;
+      userNameInput.disabled = true;
+    } else {
+      gameStatusLabel.textContent = '⏳ 等待开始';
+      startGameBtn.disabled = allUsers.length < 2;
+      endGameBtn.disabled = true;
+      usersPanel.classList.remove('hidden');
+      publicChatPanel.classList.remove('hidden');
+      anonymousChatPanel.classList.add('hidden');
+      spectatorNotice.style.display = 'none';
+      votePanel.classList.add('hidden');
+      document.getElementById('roomSetupPanel').style.opacity = '1';
+      createRoomBtn.disabled = !!currentRoomId;
+      joinRoomBtn.disabled = false;
+      joinRoomInput.disabled = false;
+      userNameInput.disabled = false;
+      hasVoted = false;
     }
+  }
 
-    // 添加聊天消息
-    function addMessageToChat(text, isOwn = false, isSystem = false) {
-        const msgDiv = document.createElement('div');
-        msgDiv.className = `message ${isOwn ? 'own' : ''}`;
-        if (isSystem) {
-            msgDiv.style.background = '#2e3b4e';
-            msgDiv.style.textAlign = 'center';
-            msgDiv.style.maxWidth = '100%';
-        }
-        const time = new Date().toLocaleTimeString().slice(0,5);
-        msgDiv.innerHTML = `<div class="meta">${isSystem ? '🔔 系统' : (isOwn ? '你' : '匿名')} · ${time}</div><div>${text}</div>`;
-        chatMessages.appendChild(msgDiv);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
+  function populateVoteSelects(userListForVote) {
+    const options = userListForVote.map(u => `<option value="${u.name}">${u.name}</option>`).join('');
+    voteSelectA.innerHTML = options;
+    voteSelectB.innerHTML = options;
+  }
+
+  // ----- Socket 事件 -----
+  socket.on('roomCreated', (roomId) => {
+    currentRoomId = roomId;
+    roomIdDisplay.textContent = roomId;
+    roomInfoDisplay.style.display = 'flex';
+    addSystemMessage(`房间已创建，房间号: ${roomId}`);
+    // 自动加入
+    const name = userNameInput.value.trim();
+    if (name) {
+      socket.emit('joinRoom', { roomId, userName: name });
+    } else {
+      showError('请输入姓名');
     }
+  });
 
-    // 清空聊天区
-    function clearChat() {
-        chatMessages.innerHTML = '';
+  socket.on('joinSuccess', (data) => {
+    currentRoomId = data.roomId;
+    currentUserName = data.userName;
+    myNameDisplay.textContent = currentUserName;
+    roomIdDisplay.textContent = currentRoomId;
+    roomInfoDisplay.style.display = 'flex';
+    renderUserList(data.users);
+    addSystemMessage(`欢迎 ${currentUserName} 加入房间`);
+    updateUIForGameState();
+  });
+
+  socket.on('updateUsers', (users) => {
+    renderUserList(users);
+    if (isGameStarted && !amISpeaker) {
+      populateVoteSelects(users);
     }
+  });
 
-    // 重置游戏UI (根据游戏状态)
-    function updateGameUI() {
-        if (isGameStarted) {
-            gameStatusLabel.textContent = '🎮 游戏中';
-            startGameBtn.disabled = true;
-            endGameBtn.disabled = false;
-            usersPanel.classList.add('hidden'); // 隐藏用户列表
-            if (amISpeaker) {
-                messageInputPanel.style.display = 'flex';
-                spectatorNotice.style.display = 'none';
-            } else {
-                messageInputPanel.style.display = 'none';
-                spectatorNotice.style.display = 'block';
-            }
-            // 开始后禁止加入相关操作
-            document.getElementById('roomSetupPanel').style.opacity = '0.7';
-            createRoomBtn.disabled = true;
-            joinRoomBtn.disabled = true;
-            joinRoomInput.disabled = true;
-        } else {
-            gameStatusLabel.textContent = '⏳ 等待开始';
-            startGameBtn.disabled = users.length < 2;
-            endGameBtn.disabled = true;
-            usersPanel.classList.remove('hidden');
-            messageInputPanel.style.display = 'none';
-            spectatorNotice.style.display = 'none';
-            document.getElementById('roomSetupPanel').style.opacity = '1';
-            createRoomBtn.disabled = !!currentRoomId;
-            joinRoomBtn.disabled = false;
-            joinRoomInput.disabled = false;
-        }
+  socket.on('preGameHistory', (messages) => {
+    messages.forEach(msg => addPublicMessage(msg, msg.senderId === socket.id));
+  });
+
+  socket.on('publicMessage', (msg) => {
+    addPublicMessage(msg, msg.senderId === socket.id);
+  });
+
+  socket.on('gameStarted', (data) => {
+    isGameStarted = true;
+    amISpeaker = data.isSpeaker;
+    myAnonymousName = data.anonymousName || '';
+    clearChat();
+    addSystemMessage('🎲 游戏开始！两名发言者将以匿名身份对话。');
+
+    if (amISpeaker) {
+      addSystemMessage(`✨ 你是 ${myAnonymousName}，现在可以匿名发言了。`);
+    } else {
+      addSystemMessage(`👀 你正在观战。请投票猜测匿名A和匿名B的真实身份。`);
+      populateVoteSelects(data.allUsers);
     }
+    updateUIForGameState();
+  });
 
-    // 创建房间
-    createRoomBtn.addEventListener('click', () => {
-        socket.emit('createRoom');
-        createRoomBtn.disabled = true;
-    });
-
-    // 加入房间
-    joinRoomBtn.addEventListener('click', () => {
-        const roomId = joinRoomInput.value.trim().toUpperCase();
-        if (!roomId) return showError('请输入房间号');
-        socket.emit('joinRoom', { roomId });
-    });
-
-    // 复制邀请链接/房间号
-    copyRoomBtn.addEventListener('click', () => {
-        if (currentRoomId) {
-            navigator.clipboard?.writeText(currentRoomId).then(() => {
-                alert('房间号已复制，分享给朋友吧！');
-            }).catch(() => {
-                prompt('手动复制房间号:', currentRoomId);
-            });
-        }
-    });
-
-    // 开始游戏
-    startGameBtn.addEventListener('click', () => {
-        if (!currentRoomId) return;
-        socket.emit('startGame');
-    });
-
-    // 结束游戏
-    endGameBtn.addEventListener('click', () => {
-        if (!currentRoomId) return;
-        socket.emit('endGame');
-    });
-
-    // 发送消息
-    sendMessageBtn.addEventListener('click', sendMessage);
-    messageInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') sendMessage();
-    });
-
-    function sendMessage() {
-        const msg = messageInput.value.trim();
-        if (!msg) return;
-        if (!amISpeaker || !isGameStarted) {
-            showError('你现在不能发言');
-            return;
-        }
-        socket.emit('sendMessage', msg);
-        messageInput.value = '';
+  socket.on('gameStateChanged', (state) => {
+    isGameStarted = state.gameStarted;
+    if (!isGameStarted) {
+      amISpeaker = false;
+      gameResultPanel.classList.add('hidden');
+      clearChat();
     }
+    updateUIForGameState();
+  });
 
-    // 关闭结果面板
-    closeResultBtn.addEventListener('click', () => {
-        gameResultPanel.classList.add('hidden');
-    });
+  socket.on('anonymousMessage', (msg) => {
+    addAnonymousMessage(msg);
+  });
 
-    // ---------- Socket 事件 ----------
-    socket.on('roomCreated', (roomId) => {
-        currentRoomId = roomId;
-        roomIdDisplay.textContent = roomId;
-        roomInfoDisplay.style.display = 'flex';
-        addMessageToChat(`房间已创建，房间号: ${roomId}`, false, true);
-        // 自动加入房间 (创建时并未加入，需要手动join? 调整: 后端创建后不自动加入，我们主动加入)
-        socket.emit('joinRoom', { roomId });
-    });
+  socket.on('voteConfirmed', () => {
+    hasVoted = true;
+    voteStatus.textContent = '✅ 投票已提交';
+    submitVoteBtn.disabled = true;
+  });
 
-    socket.on('joinSuccess', (data) => {
-        currentRoomId = data.roomId;
-        currentUserName = data.userName;
-        myNameDisplay.textContent = currentUserName;
-        isRoomCreator = data.isCreator;
-        roomIdDisplay.textContent = currentRoomId;
-        roomInfoDisplay.style.display = 'flex';
-        joinRoomInput.value = '';
-        addMessageToChat(`欢迎 ${currentUserName} ，成功加入房间`, false, true);
-        updateGameUI();
-    });
+  socket.on('gameEnded', (data) => {
+    isGameStarted = false;
+    amISpeaker = false;
+    updateUIForGameState();
 
-    socket.on('updateUsers', (userArray) => {
-        renderUserList(userArray);
-    });
+    // 显示发言者身份
+    const speakers = data.speakers;
+    resultSpeakers.innerHTML = `<p>🎤 发言者身份：<br> 
+      ${speakers.map(s => `${s.anonymousName} → ${s.realName}`).join('<br>')}
+    </p>`;
 
-    socket.on('gameStarted', (data) => {
-        isGameStarted = true;
-        amISpeaker = data.isSpeaker;
-        clearChat();
-        addMessageToChat('🎲 游戏开始！两名玩家被选中进行匿名对话', false, true);
-        if (amISpeaker) {
-            addMessageToChat('✨ 你被选中为发言者，现在可以对话了', false, true);
-        } else {
-            addMessageToChat('👀 你正在观战，等待游戏结果', false, true);
-        }
-        updateGameUI();
-    });
+    // 显示投票统计
+    let voteHtml = `<p>🗳️ 投票统计 (总票数: ${data.totalVotes})</p>`;
+    voteHtml += `<p>匿名A正确票数: ${data.correctCountA} / 匿名B正确票数: ${data.correctCountB}</p>`;
+    if (data.votes.length > 0) {
+      voteHtml += '<ul>';
+      data.votes.forEach(v => {
+        voteHtml += `<li>${v.voterName}: 猜A为 ${v.guessA} (${v.correctA?'✓':'✗'}), 猜B为 ${v.guessB} (${v.correctB?'✓':'✗'})</li>`;
+      });
+      voteHtml += '</ul>';
+    } else {
+      voteHtml += '<p>无人投票</p>';
+    }
+    resultVotes.innerHTML = voteHtml;
 
-    socket.on('gameStateChanged', (state) => {
-        isGameStarted = state.gameStarted;
-        if (!isGameStarted) {
-            amISpeaker = false;
-            gameResultPanel.classList.add('hidden');
-        }
-        updateGameUI();
+    // 显示对话记录
+    let msgHtml = '';
+    data.messages.forEach(m => {
+      const time = new Date(m.timestamp).toLocaleTimeString().slice(0,5);
+      msgHtml += `<div><strong>${m.anonymousName}:</strong> ${m.text} <span style="color:#8899bb;">${time}</span></div>`;
     });
+    resultMessages.innerHTML = msgHtml || '<div>暂无对话</div>';
 
-    socket.on('newMessage', (data) => {
-        // 游戏中的消息都显示为匿名，不暴露具体谁说的
-        addMessageToChat(data.text, amISpeaker && isGameStarted); 
-    });
+    gameResultPanel.classList.remove('hidden');
+    addSystemMessage('🏁 游戏结束，结果已公布');
+    clearChat();
+  });
 
-    socket.on('gameEnded', (data) => {
-        isGameStarted = false;
-        amISpeaker = false;
-        updateGameUI();
-        
-        // 显示结果
-        const speakers = data.speakers || [];
-        resultSpeakers.innerHTML = `<p>🎤 发言者身份：${speakers.map(s => s.name).join(' 和 ')}</p>`;
-        
-        let msgsHtml = '';
-        data.messages.forEach(m => {
-            const time = new Date(m.timestamp).toLocaleTimeString().slice(0,5);
-            msgsHtml += `<div style="margin-bottom:6px;"><strong>${m.senderName}:</strong> ${m.text} <span style="color:#8899bb; font-size:12px;">${time}</span></div>`;
-        });
-        resultMessages.innerHTML = msgsHtml || '<div>暂无对话</div>';
-        gameResultPanel.classList.remove('hidden');
-        
-        addMessageToChat('🏁 游戏结束，结果已公布', false, true);
-        clearChat(); // 清空聊天区准备下一轮
-    });
+  socket.on('errorMsg', (msg) => showError(msg));
 
-    socket.on('errorMsg', (msg) => {
-        showError(msg);
-    });
+  // ----- 用户操作 -----
+  createRoomBtn.addEventListener('click', () => {
+    const name = userNameInput.value.trim();
+    if (!name) {
+      showError('请先输入姓名');
+      return;
+    }
+    socket.emit('createRoom');
+  });
 
-    // 处理断线/重连等
-    socket.on('disconnect', () => {
-        addMessageToChat('⚠️ 连接断开，请刷新页面', false, true);
-    });
+  joinRoomBtn.addEventListener('click', () => {
+    const roomId = joinRoomInput.value.trim().toUpperCase();
+    const name = userNameInput.value.trim();
+    if (!roomId) return showError('请输入房间号');
+    if (!name) return showError('请输入姓名');
+    socket.emit('joinRoom', { roomId, userName: name });
+  });
+
+  copyRoomBtn.addEventListener('click', () => {
+    if (currentRoomId) {
+      navigator.clipboard?.writeText(currentRoomId).then(() => alert('房间号已复制'));
+    }
+  });
+
+  startGameBtn.addEventListener('click', () => {
+    if (!currentRoomId) return;
+    socket.emit('startGame');
+  });
+
+  endGameBtn.addEventListener('click', () => {
+    if (!currentRoomId) return;
+    socket.emit('endGame');
+  });
+
+  sendPublicBtn.addEventListener('click', () => {
+    const msg = publicMessageInput.value.trim();
+    if (!msg) return;
+    socket.emit('publicMessage', msg);
+    publicMessageInput.value = '';
+  });
+
+  publicMessageInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') sendPublicBtn.click();
+  });
+
+  sendAnonymousBtn.addEventListener('click', () => {
+    const msg = anonymousMessageInput.value.trim();
+    if (!msg) return;
+    socket.emit('anonymousMessage', msg);
+    anonymousMessageInput.value = '';
+  });
+
+  anonymousMessageInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') sendAnonymousBtn.click();
+  });
+
+  submitVoteBtn.addEventListener('click', () => {
+    if (hasVoted) {
+      showError('你已经投过票了');
+      return;
+    }
+    const guessA = voteSelectA.value;
+    const guessB = voteSelectB.value;
+    if (!guessA || !guessB) {
+      showError('请完成两个猜测');
+      return;
+    }
+    socket.emit('submitVote', { guessForA: guessA, guessForB: guessB });
+  });
+
+  closeResultBtn.addEventListener('click', () => {
+    gameResultPanel.classList.add('hidden');
+  });
+
 </script>
 </body>
 </html>
