@@ -1,14 +1,14 @@
 {
   "name": "chat-game",
   "version": "1.0.0",
-  "description": "anonymous chat game",
+  "description": "Anonymous chat game with random speakers",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
     "express": "^4.18.2",
-    "socket.io": "^4.7.2",
+    "socket.io": "^4.5.4",
     "uuid": "^9.0.0"
   }
 }
