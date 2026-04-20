@@ -502,29 +502,4 @@
     });
 </script>
 </body>
-</html>function endGame() {
-  socket.emit("endGame");
-}
-
-function send() {
-  const msg = document.getElementById("msg").value;
-  socket.emit("sendMessage", msg);
-}
-
-socket.on("newMessage", (msg) => {
-  const div = document.getElementById("chat");
-  div.innerHTML += "<p>玩家：" + msg.text + "</p>";
-});
-
-socket.on("gameEnded", (data) => {
-  const div = document.getElementById("chat");
-
-  div.innerHTML += "<h3>结果：</h3>";
-  data.speakers.forEach((u,i)=>{
-    div.innerHTML += `<p>玩家${i+1}: ${u.name}</p>`;
-  });
-});
-</script>
-
-</body>
 </html>
